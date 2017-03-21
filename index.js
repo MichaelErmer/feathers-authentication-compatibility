@@ -90,6 +90,11 @@ module.exports = function(options){
   
   authentication.before({
     create: function(hook) {
+      if (hook.data.token) {
+        hook.data.strategy = 'jwt',
+        hook.data.accessToken = hook.data.token;
+        delete hook.data.token;
+      }
       if (hook.data.type) {
         hook.data.strategy = hook.data.type;
         delete hook.data.type;
