@@ -1,8 +1,10 @@
 # feathers-authentication-compatibility
 
-This module keeps the old client libraries using auth local and socket.io compatible with auk style login.
+This module keeps the old client libraries `0.x` using auth local and socket.io compatible with auk style login `1.0+`.
 
 ## Usage
+
+    npm install feathers-authentication-compability
 
 ```javascript
 const authenticationCompatibility = require('feathers-authentication-compatibility');
