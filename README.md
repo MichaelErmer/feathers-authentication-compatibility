@@ -4,8 +4,7 @@ This module keeps the old client libraries using auth local and socket.io compat
 
 ## Usage
 
-  const authenticationCompability = require('feathers-authentication-compability');
-  // after app.configure(authentication);
-  app.configure(authenticationCompability);
-
-
+```javascript
+const authenticationCompability = require('feathers-authentication-compability');
+// after app.configure(authentication);
+app.configure(authenticationCompability);
