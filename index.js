@@ -48,8 +48,6 @@ class Service {
 
             params.req.body = data;
             
-            console.log('auth legacy', data, params);
-
             self.create(data, params).then(response => {
               feathersParams(socket).token = response.token;
               feathersParams(socket).user = response.data;
