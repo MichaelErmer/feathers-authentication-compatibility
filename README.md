@@ -4,7 +4,7 @@ This module keeps the old client libraries `0.x` using auth local and socket.io 
 
 ## Usage
 
-    npm install feathers-authentication-compability
+    npm install feathers-authentication-compatibility
 
 ```javascript
 const authenticationCompatibility = require('feathers-authentication-compatibility');
