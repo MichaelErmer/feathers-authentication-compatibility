@@ -44,6 +44,11 @@ class Service {
             // Put our data in a fake req.body object to get local auth
             // with Passport to work because it checks res.body for the
             // username and password.
+            
+            // compatibility
+            data.strategy = data.strategy || data.type;
+            delete data.type;
+            
             let params = { provider, req: socket.request };
 
             params.req.body = data;
