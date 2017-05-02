@@ -75,7 +75,7 @@ class Service {
 }
 
 module.exports = function (options1 = {}) {
-  options = Object.assign({}, {
+  const options = Object.assign({}, {
     path: '/authentication',
     legacyPath: '/auth/local',
     userEndpoint: 'users',
@@ -88,52 +88,52 @@ module.exports = function (options1 = {}) {
   return function () {
     return authCompatibility(options, this)
   }
-  
-  function authCompatibility (options, app)
-    app.use(options.legacyPath, new Service(options));
-
-    const authenticationCompabilityService = app.service(options.legacyPath);
-    const authentication = app.service(options.path);
-
-    authenticationCompabilityService.filter(function (data, connection) { return false; });
-
-    if (options.returnUser || options.returnToken) {
-      authentication.after({
-        create: function(hook) {
-          hook.legacyLogin = 1;
-          if (hook.result.accessToken) {
-            if (options.returnToken) {
-              hook.result.token = hook.result.accessToken;
-            }
-            if (options.returnUser) {
-              return hook.app.passport.verifyJWT(hook.result.accessToken, {secret: hook.app.get('auth').secret}).then(function(res) {
-                return hook.app.service(options.userEndpoint).get(res.userId).then(function(user) {
-                  hook.result.data = user;
-                  return Promise.resolve();
-                });
-              });
-            }
-          }
-        }
-      });
-    }
-
-    if (options.acceptLegacyTokens) {
-      authentication.before({
-        create: function(hook) {
-          if (hook.data.token) {
-            hook.data.strategy = 'jwt',
-            hook.data.accessToken = hook.data.token;
-            delete hook.data.token;
-          }
-          if (hook.data.type) {
-            hook.data.strategy = hook.data.type;
-            delete hook.data.type;
-          }
-        }
-      });
-    } 
-  };
 }
+  
+function authCompatibility (options, app) {
+  app.use(options.legacyPath, new Service(options));
+
+  const authenticationCompabilityService = app.service(options.legacyPath);
+  const authentication = app.service(options.path);
+
+  authenticationCompabilityService.filter(function (data, connection) { return false; });
+
+  if (options.returnUser || options.returnToken) {
+    authentication.after({
+      create: function(hook) {
+        hook.legacyLogin = 1;
+        if (hook.result.accessToken) {
+          if (options.returnToken) {
+            hook.result.token = hook.result.accessToken;
+          }
+          if (options.returnUser) {
+            return hook.app.passport.verifyJWT(hook.result.accessToken, {secret: hook.app.get('auth').secret}).then(function(res) {
+              return hook.app.service(options.userEndpoint).get(res.userId).then(function(user) {
+                hook.result.data = user;
+                return Promise.resolve();
+              });
+            });
+          }
+        }
+      }
+    });
+  }
+
+  if (options.acceptLegacyTokens) {
+    authentication.before({
+      create: function(hook) {
+        if (hook.data.token) {
+          hook.data.strategy = 'jwt',
+          hook.data.accessToken = hook.data.token;
+          delete hook.data.token;
+        }
+        if (hook.data.type) {
+          hook.data.strategy = hook.data.type;
+          delete hook.data.type;
+        }
+      }
+    });
+  } 
+};
 
 module.exports.Service = Service;
