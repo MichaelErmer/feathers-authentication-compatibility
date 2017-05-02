@@ -9,4 +9,15 @@ This module keeps the old client libraries `0.x` using auth local and socket.io 
 ```javascript
 const authenticationCompatibility = require('feathers-authentication-compatibility');
 // after app.configure(authentication);
-app.configure(authenticationCompatibility);
+app.configure(authenticationCompatibility({ options }));
+```
+
+Defaults for `options` are:
+
+* path: '/authentication',
+* legacyPath: '/auth/local',
+* userEndpoint: 'users',
+* socket: true,
+* acceptLegacyTokens: true,
+* returnUser: true,
+* returnToken: true
