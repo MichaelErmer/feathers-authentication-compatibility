@@ -79,6 +79,7 @@ module.exports = function(options){
   options = options || {
     path: '/authentication',
     legacyPath: '/auth/local',
+    userEndpoint: 'users',
     socket: true,
     acceptLegacyTokens: true,
     returnUser: true,
@@ -102,7 +103,7 @@ module.exports = function(options){
           }
           if (options.returnUser) {
             return hook.app.passport.verifyJWT(hook.result.accessToken, {secret: hook.app.get('auth').secret}).then(function(res) {
-              return hook.app.service('users').get(res.userId).then(function(user) {
+              return hook.app.service(options.userEndpoint).get(res.userId).then(function(user) {
                 hook.result.data = user;
                 return Promise.resolve();
               });
