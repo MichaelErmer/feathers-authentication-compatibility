@@ -66,10 +66,9 @@ class Service {
   }
 
   create(data, params) {
-    if (data.type) {
-      data.strategy = data.type;
-      delete data.type;
-    }
+    data.strategy = data.type || 'local';
+    delete data.type;
+
     return this.app.service('authentication').create(data, params);
   }
 }
