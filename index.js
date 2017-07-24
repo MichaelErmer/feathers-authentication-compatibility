@@ -76,14 +76,17 @@ class Service {
 
 module.exports = function(options){
   const app = this;
-  options = options || {
+  options = Object.assign({}, options, {
     path: '/authentication',
     legacyPath: '/auth/local',
     socket: true,
     acceptLegacyTokens: true,
     returnUser: true,
+    unsetFields: [
+      'password'
+    ],
     returnToken: true
-  };
+  });
 
   app.use(options.legacyPath, new Service(options));
 
@@ -104,6 +107,12 @@ module.exports = function(options){
             return hook.app.passport.verifyJWT(hook.result.accessToken, {secret: hook.app.get('auth').secret}).then(function(res) {
               return hook.app.service('users').get(res.userId).then(function(user) {
                 hook.result.data = user;
+                if (options.unsetFields) {
+                  for (var i in options.unsetFields) {
+                    var field = options.unsetFields[i];
+                    if (user[field]) delete user[field];
+                  }
+                }
                 return Promise.resolve();
               });
             });
