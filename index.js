@@ -12,7 +12,7 @@ class Service {
       app.io.on('connection', function(socket) {
         socket.on('authenticate', function(data) {
           let errorHandler = function(error) {
-            socket[emit]('unauthorized', error, function(){
+            socket[emit]('unauthorized', error.message, function(){
             });
 
             throw error;
