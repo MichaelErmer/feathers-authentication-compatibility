@@ -73,11 +73,11 @@ class Service {
   }
 }
 
-module.exports = function(options){
-  const app = this;
-  options = Object.assign({}, options, {
+module.exports = function (options1 = {}) {
+  const options = Object.assign({}, {
     path: '/authentication',
     legacyPath: '/auth/local',
+    userEndpoint: 'users',
     socket: true,
     acceptLegacyTokens: true,
     returnUser: true,
@@ -85,8 +85,14 @@ module.exports = function(options){
       'password'
     ],
     returnToken: true
-  });
+  }, options1);
 
+  return function () {
+    return authCompatibility(options, this)
+  }
+}
+  
+function authCompatibility (options, app) {
   app.use(options.legacyPath, new Service(options));
 
   const authenticationCompabilityService = app.service(options.legacyPath);
@@ -104,7 +110,7 @@ module.exports = function(options){
           }
           if (options.returnUser) {
             return hook.app.passport.verifyJWT(hook.result.accessToken, {secret: hook.app.get('auth').secret}).then(function(res) {
-              return hook.app.service('users').get(res.userId).then(function(user) {
+              return hook.app.service(options.userEndpoint).get(res.userId).then(function(user) {
                 hook.result.data = user;
                 if (options.unsetFields) {
                   for (var i in options.unsetFields) {
