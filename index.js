@@ -12,7 +12,7 @@ class Service {
       app.io.on('connection', function(socket) {
         socket.on('authenticate', function(data) {
           let errorHandler = function(error) {
-            socket[emit]('unauthorized', error, function(){
+            socket[emit]('unauthorized', error.message, function(){
             });
 
             throw error;
@@ -66,10 +66,9 @@ class Service {
   }
 
   create(data, params) {
-    if (data.type) {
-      data.strategy = data.type;
-      delete data.type;
-    }
+    data.strategy = data.type || 'local';
+    delete data.type;
+
     return this.app.service('authentication').create(data, params);
   }
 }
@@ -82,6 +81,9 @@ module.exports = function (options1 = {}) {
     socket: true,
     acceptLegacyTokens: true,
     returnUser: true,
+    unsetFields: [
+      'password'
+    ],
     returnToken: true
   }, options1);
 
@@ -110,6 +112,12 @@ function authCompatibility (options, app) {
             return hook.app.passport.verifyJWT(hook.result.accessToken, {secret: hook.app.get('auth').secret}).then(function(res) {
               return hook.app.service(options.userEndpoint).get(res.userId).then(function(user) {
                 hook.result.data = user;
+                if (options.unsetFields) {
+                  for (var i in options.unsetFields) {
+                    var field = options.unsetFields[i];
+                    if (user[field]) delete user[field];
+                  }
+                }
                 return Promise.resolve();
               });
             });
