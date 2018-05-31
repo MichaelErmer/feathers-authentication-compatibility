@@ -37,19 +37,9 @@ DEADJOE
 .idea
 
 # nyc test coverage
-.nyc_output
-
-# Grunt intermediate storage (http://gruntjs.com/creating-plugins#storing-task-files)
-.grunt
-
-# node-waf configuration
-.lock-wscript
-
-# Compiled binary addons (http://nodejs.org/api/addons.html)
-build/Release
+.nyc_outputs
 
 # Dependency directories
-node_modules
 jspm_packages
 
 # Optional npm cache directory
@@ -57,3 +47,4 @@ jspm_packages
 
 # Optional REPL history
 .node_repl_history
+package-lock.json

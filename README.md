@@ -6,6 +6,8 @@ This module keeps the old client libraries `0.x` using auth local and socket.io 
 
     npm install feathers-authentication-compatibility
 
+### legacy endpoint /auth/local
+
 ```javascript
 const authenticationCompatibility = require('feathers-authentication-compatibility');
 // after app.configure(authentication);
@@ -16,8 +18,33 @@ Defaults for `options` are:
 
 * path: '/authentication',
 * legacyPath: '/auth/local',
-* userEndpoint: 'users',
 * socket: true,
-* acceptLegacyTokens: true,
-* returnUser: true,
-* returnToken: true
+
+### legacy client request syntax
+
+```javascript
+const authenticationCompatibility = require('feathers-authentication-compatibility');
+
+app.service('authentication').hooks({
+  before: {
+    create: [
+      authenticationCompatibility.beforeAuthenticationCreateHook()
+    ]
+  }
+});
+```
+
+### send user and *token* in response
+
+```javascript
+const authenticationCompatibility = require('feathers-authentication-compatibility');
+
+app.service('authentication').hooks({
+  after: {
+    create: [
+      authenticationCompatibility.afterAuthenticationReturnLegacyTokenHook(),
+      authenticationCompatibility.afterAuthenticationReturnUserHook()
+    ]
+  }
+});
+```
