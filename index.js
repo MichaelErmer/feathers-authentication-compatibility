@@ -112,9 +112,8 @@ function returnUserHook (options={}) {
         return hook.app.service(options.userEndpoint).get(res.userId).then(function(user) {
           hook.result.data = user;
           if (options.unsetFields) {
-            for (let i in options.unsetFields) {
-              let field = options.unsetFields[i];
-              if (user[field]) delete user[field];
+            for (const field of options.unsetFields) {
+              delete user[field];
             }
           }
           return Promise.resolve();
